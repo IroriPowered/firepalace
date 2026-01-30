@@ -1,6 +1,7 @@
 package cc.irori.firepalace.manager.redis;
 
 import cc.irori.firepalace.api.user.User;
+import cc.irori.firepalace.api.util.WorldActionQueue;
 import cc.irori.firepalace.common.redis.UpstreamPacketHandler;
 import cc.irori.firepalace.common.redis.protocol.impl.downstream.DownstreamStatusPacket;
 import cc.irori.firepalace.common.redis.protocol.impl.upstream.UpstreamQueueJoinPacket;
@@ -10,7 +11,6 @@ import cc.irori.firepalace.common.util.Logs;
 import cc.irori.firepalace.manager.FirepalaceImpl;
 import cc.irori.firepalace.manager.game.GameHolder;
 import cc.irori.firepalace.manager.user.UserImpl;
-import cc.irori.firepalace.manager.util.WorldActionQueue;
 import com.hypixel.hytale.logger.HytaleLogger;
 import java.util.ArrayList;
 import java.util.List;
