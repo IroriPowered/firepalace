@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class CreativeGame extends Game {
@@ -21,12 +22,12 @@ public class CreativeGame extends Game {
   }
 
   @Override
-  public CompletableFuture<JoinResult> onUserPreJoin(User user, boolean isCreating) {
+  public CompletableFuture<JoinResult> onUserPreJoin(UUID uuid, boolean isCreating) {
     World world = Universe.get().getWorld("creative");
 
     return CompletableFuture.completedFuture(JoinResult.allow(
         world,
-        world.getWorldConfig().getSpawnProvider().getSpawnPoint(world, user.getUuid())
+        world.getWorldConfig().getSpawnProvider().getSpawnPoint(world, uuid)
     ));
   }
 

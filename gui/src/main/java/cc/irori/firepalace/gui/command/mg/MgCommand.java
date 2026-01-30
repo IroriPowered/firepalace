@@ -1,0 +1,27 @@
+package cc.irori.firepalace.gui.command.mg;
+
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.command.system.CommandContext;
+import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
+
+public class MgCommand extends AbstractPlayerCommand {
+
+  public MgCommand() {
+    super("mg", "firepalace.commands.mg.desc");
+
+    addSubCommand(new MgJoinCommand());
+  }
+
+  @Override
+  protected void execute(@NonNullDecl CommandContext context,
+                         @NonNullDecl Store<EntityStore> store, @NonNullDecl Ref<EntityStore> ref,
+                         @NonNullDecl PlayerRef playerRef, @NonNullDecl World world) {
+    playerRef.sendMessage(Message.raw("Not implemented yet!"));
+  }
+}

@@ -6,11 +6,11 @@ import java.util.UUID;
 import org.bson.BsonDocument;
 import org.bson.BsonString;
 
-public record UpstreamQueueJoinPacket(UUID uuid, String gameId) implements UpstreamPacket {
+public record UpstreamRequestJoinPacket(UUID uuid, String gameId) implements UpstreamPacket {
 
   public static final String ID = "queue_join";
 
-  public UpstreamQueueJoinPacket(BsonDocument root) {
+  public UpstreamRequestJoinPacket(BsonDocument root) {
     this(
         UUID.fromString(root.getString("uuid").getValue()),
         root.getString("game_id").getValue()
@@ -24,7 +24,7 @@ public record UpstreamQueueJoinPacket(UUID uuid, String gameId) implements Upstr
 
   @Override
   public void handle(UpstreamPacketHandler handler) {
-    handler.handleQueueJoin(this);
+    handler.handleRequestJoin(this);
   }
 
   @Override

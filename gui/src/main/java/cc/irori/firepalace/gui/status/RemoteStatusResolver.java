@@ -1,10 +1,10 @@
 package cc.irori.firepalace.gui.status;
 
-import cc.irori.firepalace.common.redis.protocol.impl.upstream.UpstreamQueueJoinPacket;
+import cc.irori.firepalace.common.redis.protocol.impl.upstream.UpstreamRequestJoinPacket;
 import cc.irori.firepalace.common.status.GameStatus;
 import cc.irori.firepalace.gui.FirepalaceGuiPlugin;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import java.util.List;
-import java.util.UUID;
 
 public class RemoteStatusResolver implements StatusResolver {
 
@@ -22,8 +22,8 @@ public class RemoteStatusResolver implements StatusResolver {
   }
 
   @Override
-  public void joinGame(UUID uuid, String gameId) {
-    plugin.getRedis().sendPacket(new UpstreamQueueJoinPacket(uuid, gameId));
+  public void joinGame(PlayerRef playerRef, String gameId) {
+    plugin.getRedis().sendPacket(new UpstreamRequestJoinPacket(playerRef.getUuid(), gameId));
   }
 
   public void updateStatusList(List<GameStatus> statusList) {

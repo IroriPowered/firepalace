@@ -29,7 +29,7 @@ public record DownstreamStatusPacket(List<GameStatus> statusList) implements Dow
 
   @Override
   public void handle(DownstreamPacketHandler handler) {
-    handler.handleStatusPacket(this);
+    handler.handleStatus(this);
   }
 
   @Override

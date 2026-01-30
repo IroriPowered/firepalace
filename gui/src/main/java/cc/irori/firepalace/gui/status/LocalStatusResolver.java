@@ -4,8 +4,8 @@ import cc.irori.firepalace.common.status.GameStatus;
 import cc.irori.firepalace.manager.FirepalaceImpl;
 import cc.irori.firepalace.manager.user.UserImpl;
 import cc.irori.firepalace.manager.util.GameUtil;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import java.util.List;
-import java.util.UUID;
 
 public class LocalStatusResolver implements StatusResolver {
 
@@ -16,9 +16,9 @@ public class LocalStatusResolver implements StatusResolver {
   }
 
   @Override
-  public void joinGame(UUID uuid, String gameId) {
+  public void joinGame(PlayerRef playerRef, String gameId) {
     FirepalaceImpl firepalace = FirepalaceImpl.get();
-    UserImpl user = firepalace.getUserManager().getUser(uuid);
+    UserImpl user = firepalace.getUserManager().getUser(playerRef);
     GameUtil.joinGameById(firepalace, user, gameId);
   }
 }

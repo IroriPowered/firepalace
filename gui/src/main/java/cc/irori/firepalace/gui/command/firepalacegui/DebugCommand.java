@@ -1,4 +1,4 @@
-package cc.irori.firepalace.gui.command;
+package cc.irori.firepalace.gui.command.firepalacegui;
 
 import cc.irori.firepalace.common.status.GameStatus;
 import cc.irori.firepalace.gui.FirepalaceGuiPlugin;

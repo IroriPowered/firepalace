@@ -1,4 +1,4 @@
-package cc.irori.firepalace.gui.command;
+package cc.irori.firepalace.gui.command.firepalacegui;
 
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractCommandCollection;
 

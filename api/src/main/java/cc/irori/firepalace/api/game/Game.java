@@ -1,6 +1,7 @@
 package cc.irori.firepalace.api.game;
 
 import cc.irori.firepalace.api.user.User;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class Game {
@@ -15,7 +16,7 @@ public abstract class Game {
     return instance;
   }
 
-  public abstract CompletableFuture<JoinResult> onUserPreJoin(User user, boolean isCreating);
+  public abstract CompletableFuture<JoinResult> onUserPreJoin(UUID uuid, boolean isCreating);
 
   public abstract void onUserPostJoin(User user);
 

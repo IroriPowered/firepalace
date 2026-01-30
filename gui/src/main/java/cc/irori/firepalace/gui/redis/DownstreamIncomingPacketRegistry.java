@@ -2,6 +2,7 @@ package cc.irori.firepalace.gui.redis;
 
 import cc.irori.firepalace.common.redis.DownstreamPacketHandler;
 import cc.irori.firepalace.common.redis.IncomingPacketRegistry;
+import cc.irori.firepalace.common.redis.protocol.impl.downstream.DownstreamAcceptJoinPacket;
 import cc.irori.firepalace.common.redis.protocol.impl.downstream.DownstreamStatusPacket;
 
 public class DownstreamIncomingPacketRegistry
@@ -11,6 +12,7 @@ public class DownstreamIncomingPacketRegistry
       new DownstreamIncomingPacketRegistry();
 
   protected DownstreamIncomingPacketRegistry() {
+    register(DownstreamAcceptJoinPacket.ID, DownstreamAcceptJoinPacket::new);
     register(DownstreamStatusPacket.ID, DownstreamStatusPacket::new);
   }
 }

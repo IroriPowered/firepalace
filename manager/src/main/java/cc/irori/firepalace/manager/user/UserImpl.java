@@ -9,9 +9,15 @@ import cc.irori.firepalace.common.util.Logs;
 import cc.irori.firepalace.manager.FirepalaceImpl;
 import cc.irori.firepalace.manager.game.GameHolder;
 import cc.irori.firepalace.manager.game.GameInstanceImpl;
+import cc.irori.firepalace.manager.util.GameUtil;
+import com.hypixel.hytale.component.Holder;
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
+import com.hypixel.hytale.server.core.modules.entity.component.HeadRotation;
+import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -56,6 +62,10 @@ public class UserImpl implements User {
   }
 
   public CompletableFuture<Void> joinGame(GameMetadata metadata) {
+    return joinGame(metadata, null);
+  }
+
+  public CompletableFuture<Void> joinGame(GameMetadata metadata, @Nullable PlayerConnectEvent connectEvent) {
     return quitGame().thenCompose(v -> {
       state = UserState.JOINING;
 
@@ -67,31 +77,18 @@ public class UserImpl implements User {
             new IllegalArgumentException("Game not registered: " + metadata.id()));
       }
 
-      CompletableFuture<Game> createFuture;
-      boolean creating;
-      if (!holder.hasGame()) {
-        LOGGER.atInfo().log("Creating new game instance for game: %s", metadata.id());
-        playerRef.sendMessage(Message.raw("Creating a new game..."));
-
-        createFuture = holder.createGame();
-        creating = true;
-      } else {
-        createFuture = CompletableFuture.completedFuture(holder.getGame());
-        creating = false;
-      }
-
+      return GameUtil.tryCreateGame(holder);
+    }).thenCompose(creating -> {
       playerRef.sendMessage(Message.join(
           Message.raw("Joining game: "),
           Message.raw(metadata.name()).color(Colors.MUSTARD)
       ));
-      return createFuture.thenCompose(game -> {
-        currentGame = game;
-        return game.onUserPreJoin(this, creating);
-      });
+
+      GameHolder holder = firepalace.getGameManager().getGameHolder(metadata);
+      return GameUtil.tryPreJoin(holder, playerRef.getUuid(), creating);
     })
     .thenCompose(result -> {
       if (!result.allowJoin()) {
-        currentGame = null;
         state = UserState.IDLE;
         if (result.additionalInfo() == null) {
           throw new IllegalStateException(
@@ -102,24 +99,43 @@ public class UserImpl implements User {
         }
       }
 
-      CompletableFuture<Void> future = new CompletableFuture<>();
-      World currentWorld = playerRef.getReference().getStore().getExternalData().getWorld();
-      currentWorld.execute(() -> {
-        Store<EntityStore> store = playerRef.getReference().getStore();
-        Teleport teleport = Teleport.createForPlayer(result.world(), result.spawnPosition());
-        store.addComponent(playerRef.getReference(), Teleport.getComponentType(), teleport);
-      });
-      firepalace.getWorldActionQueue().enqueueAdd(playerRef.getUuid(), result.world(), () -> {
+      CompletableFuture<Void> future;
+      if (connectEvent != null) {
+        connectEvent.setWorld(result.world());
+
+        Holder<EntityStore> holder = connectEvent.getHolder();
+        TransformComponent transformComponent = holder.ensureAndGetComponent(TransformComponent.getComponentType());
+        transformComponent.setPosition(result.spawnPosition().getPosition());
+        HeadRotation headRotationComponent = holder.ensureAndGetComponent(HeadRotation.getComponentType());
+        headRotationComponent.teleportRotation(result.spawnPosition().getRotation());
+        future = CompletableFuture.completedFuture(null);
+      } else {
+        World currentWorld = playerRef.getReference().getStore().getExternalData().getWorld();
+        currentWorld.execute(() -> {
+          Store<EntityStore> store = playerRef.getReference().getStore();
+          Teleport teleport = Teleport.createForPlayer(result.world(), result.spawnPosition());
+          store.addComponent(playerRef.getReference(), Teleport.getComponentType(), teleport);
+        });
+        future = new CompletableFuture<>();
+      }
+
+      GameHolder holder = firepalace.getGameManager().getGameHolder(metadata);
+      currentGame = holder.getGame();
+
+      firepalace.getWorldActionQueue().enqueueAdd(playerRef.getUuid(), result.world(), event -> {
         LOGGER.atInfo().log("%s joined game: %s", getName(), metadata.id());
         GameInstanceImpl instance = (GameInstanceImpl) currentGame.getGameInstance();
         instance.addUser(this);
 
         currentGame.onUserPostJoin(this);
         state = UserState.PLAYING;
-        future.complete(null);
+
+        if (connectEvent == null) {
+          future.complete(null);
+        }
       });
       firepalace.getWorldActionQueue().enqueueReady(playerRef.getUuid(), result.world(),
-          () -> currentGame.onUserReady(this));
+          event -> currentGame.onUserReady(this));
       return future;
     });
   }
@@ -128,13 +144,20 @@ public class UserImpl implements User {
     if (currentGame != null) {
       GameInstanceImpl instance = (GameInstanceImpl) currentGame.getGameInstance();
 
+      CompletableFuture<Void> future = new CompletableFuture<>();
+      Ref<EntityStore> ref = playerRef.getReference();
+
+      if (ref == null) {
+        currentGame = null;
+        return CompletableFuture.completedFuture(null);
+      }
+
+      World world = ref.getStore().getExternalData().getWorld();
       playerRef.sendMessage(Message.join(
           Message.raw("Leaving game: "),
           Message.raw(instance.getGameHolder().getMetadata().name()).color(Colors.MUSTARD)
       ));
 
-      CompletableFuture<Void> future = new CompletableFuture<>();
-      World world = playerRef.getReference().getStore().getExternalData().getWorld();
       world.execute(() -> {
         LOGGER.atInfo().log("%s quit game: %s",
             getName(), instance.getGameHolder().getMetadata().id());

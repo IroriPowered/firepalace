@@ -5,7 +5,7 @@ import cc.irori.firepalace.api.game.Game;
 import cc.irori.firepalace.api.game.GameInstance;
 import cc.irori.firepalace.api.game.metadata.GameMetadata;
 import cc.irori.firepalace.api.user.User;
-import cc.irori.firepalace.api.util.WorldActionQueue;
+import cc.irori.firepalace.api.util.EventActionQueue;
 import cc.irori.firepalace.common.redis.Recipient;
 import cc.irori.firepalace.common.redis.RedisParticipant;
 import cc.irori.firepalace.common.redis.UpstreamPacketHandler;
@@ -27,7 +27,7 @@ public class FirepalaceImpl implements Firepalace {
 
   private final UserManager userManager;
   private final GameManager gameManager;
-  private final WorldActionQueue worldActionQueue;
+  private final EventActionQueue eventActionQueue;
   private final RedisParticipant<UpstreamPacketHandler, DownstreamPacket> redis;
 
   public FirepalaceImpl(FirepalaceManagerPlugin plugin) {
@@ -37,7 +37,7 @@ public class FirepalaceImpl implements Firepalace {
 
     this.userManager = new UserManager(this, plugin);
     this.gameManager = new GameManager(this);
-    this.worldActionQueue = new WorldActionQueue(plugin);
+    this.eventActionQueue = new EventActionQueue(plugin);
 
     if (plugin.redisConfig.get().useRemote) {
       LOGGER.atInfo().log("Using redis for remote status sending");
@@ -76,8 +76,8 @@ public class FirepalaceImpl implements Firepalace {
     return gameManager;
   }
 
-  public WorldActionQueue getWorldActionQueue() {
-    return worldActionQueue;
+  public EventActionQueue getWorldActionQueue() {
+    return eventActionQueue;
   }
 
   public RedisParticipant<UpstreamPacketHandler, DownstreamPacket> getRedis() {
