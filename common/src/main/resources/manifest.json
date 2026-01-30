@@ -1,0 +1,17 @@
+{
+  "Group": "IroriPowered",
+  "Name": "Firepalace-Common",
+  "Version": "1.0.0",
+  "Website": "https://www.irori.cc/",
+  "Description": "Common internal codes for Firepalace minigame manager.",
+  "Main": "cc.irori.firepalace.common.FirepalaceCommonPlugin",
+  "Authors": [
+    {
+      "Name": "KabanFriends",
+      "Url": "https://github.com/KabanFriends"
+    }
+  ],
+  "ServerVersion": "*",
+  "Dependencies": {},
+  "OptionalDependencies": {}
+}

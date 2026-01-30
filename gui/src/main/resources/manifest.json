@@ -1,0 +1,21 @@
+{
+  "Group": "IroriPowered",
+  "Name": "Firepalace-GUI",
+  "Version": "1.0.0",
+  "Website": "https://www.irori.cc/",
+  "Description": "Game selection GUI module for Firepalace minigame manager.",
+  "Main": "cc.irori.firepalace.gui.FirepalaceGuiPlugin",
+  "Authors": [
+    {
+      "Name": "KabanFriends",
+      "Url": "https://github.com/KabanFriends"
+    }
+  ],
+  "ServerVersion": "*",
+  "Dependencies": {
+    "IroriPowered:Firepalace-Common": "*"
+  },
+  "OptionalDependencies": {
+    "IroriPowered:Firepalace-Manager": "*"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "Group": "IroriPowered",
+  "Name": "Firepalace-Manager",
+  "Version": "1.0.0",
+  "Website": "https://www.irori.cc/",
+  "Description": "Simple minigame manager for Hytale.",
+  "Main": "cc.irori.firepalace.manager.FirepalaceManagerPlugin",
+  "Authors": [
+    {
+      "Name": "KabanFriends",
+      "Url": "https://github.com/KabanFriends"
+    }
+  ],
+  "ServerVersion": "*",
+  "Dependencies": {
+    "IroriPowered:Firepalace-Common": "*"
+  },
+  "OptionalDependencies": {}
+}

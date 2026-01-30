@@ -1,0 +1,19 @@
+{
+  "Group": "IroriPowered",
+  "Name": "Firepalace-Game-Creative",
+  "Version": "1.0.0",
+  "Website": "https://www.irori.cc/",
+  "Description": "An example creative freebuild game for Firepalace minigame manager.",
+  "Main": "cc.irori.firepalace.game.creative.CreativeGamePlugin",
+  "Authors": [
+    {
+      "Name": "KabanFriends",
+      "Url": "https://github.com/KabanFriends"
+    }
+  ],
+  "ServerVersion": "*",
+  "Dependencies": {
+    "IroriPowered:Firepalace-Manager": "*"
+  },
+  "OptionalDependencies": {}
+}
