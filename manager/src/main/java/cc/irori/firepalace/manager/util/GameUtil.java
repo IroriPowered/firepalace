@@ -53,7 +53,7 @@ public class GameUtil {
   public static CompletableFuture<Void> joinGameById(FirepalaceImpl firepalace,
                                                      UserImpl user, String gameId,
                                                      @Nullable PlayerConnectEvent connectEvent) {
-    if (!firepalace.getGameManager().isGameRegistered(gameId)) {
+    if (!firepalace.getGameManager().isGameAvailable(gameId)) {
       user.getPlayerRef().sendMessage(Message.join(
           Message.raw("Invalid game ID: "),
           Message.raw(gameId).color(Colors.MUSTARD)

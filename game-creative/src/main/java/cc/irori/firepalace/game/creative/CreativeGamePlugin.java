@@ -14,7 +14,8 @@ public class CreativeGamePlugin extends JavaPlugin {
       "creative",
       "Creative Freebuild",
       "Description goes here",
-      List.of(GameTag.SOLO)
+      List.of(GameTag.SOLO),
+      true
   );
 
   public CreativeGamePlugin(@NonNullDecl JavaPluginInit init) {

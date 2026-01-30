@@ -39,6 +39,10 @@ public class GameManager {
     return games.containsKey(id);
   }
 
+  public boolean isGameAvailable(String id) {
+    return games.containsKey(id) && games.get(id).getMetadata().available();
+  }
+
   public GameHolder getGameHolder(String id) {
     return games.get(id);
   }

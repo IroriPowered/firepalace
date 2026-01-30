@@ -31,7 +31,7 @@ public class MgJoinCommand extends AbstractPlayerCommand {
                          @NonNullDecl PlayerRef playerRef, @NonNullDecl World world) {
     String gameId = idArg.get(context);
     StatusResolver resolver = FirepalaceGuiPlugin.get().getStatusResolver();
-    if (!resolver.exists(gameId)) {
+    if (!resolver.existsAndIsAvailable(gameId)) {
       playerRef.sendMessage(Message.join(
           Message.raw("Invalid game ID: "),
           Message.raw(gameId).color(Colors.MUSTARD)

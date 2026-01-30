@@ -13,4 +13,10 @@ public interface StatusResolver {
   default boolean exists(String gameId) {
     return resolve().stream().anyMatch(status -> status.metadata().id().equals(gameId));
   }
+
+  default boolean existsAndIsAvailable(String gameId) {
+    return resolve().stream()
+        .filter(status -> status.metadata().available())
+        .anyMatch(status -> status.metadata().id().equals(gameId));
+  }
 }
