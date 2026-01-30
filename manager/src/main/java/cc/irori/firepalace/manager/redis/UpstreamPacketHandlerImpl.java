@@ -10,7 +10,7 @@ import cc.irori.firepalace.common.util.Logs;
 import cc.irori.firepalace.manager.FirepalaceImpl;
 import cc.irori.firepalace.manager.game.GameHolder;
 import cc.irori.firepalace.manager.user.UserImpl;
-import cc.irori.firepalace.manager.util.WorldActionScheduler;
+import cc.irori.firepalace.manager.util.WorldActionQueue;
 import com.hypixel.hytale.logger.HytaleLogger;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +27,8 @@ public class UpstreamPacketHandlerImpl implements UpstreamPacketHandler {
 
   @Override
   public void handleQueueJoin(UpstreamQueueJoinPacket packet) {
-    firepalace.getWorldActionScheduler().scheduleReady(packet.uuid(),
-        WorldActionScheduler.ANY_WORLD, () -> {
+    firepalace.getWorldActionQueue().enqueueReady(packet.uuid(),
+        WorldActionQueue.ANY_WORLD, () -> {
           UserImpl user = firepalace.getUserManager().getUser(packet.uuid());
           if (user == null) {
             LOGGER.atWarning().log("Cannot handle join request for unknown user: %s",

@@ -14,13 +14,13 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class WorldActionScheduler {
+public class WorldActionQueue {
 
   public static final World ANY_WORLD = null;
 
   private final Map<QueueKey, List<Runnable>> queue = new ConcurrentHashMap<>();
 
-  public WorldActionScheduler(JavaPlugin plugin) {
+  public WorldActionQueue(JavaPlugin plugin) {
     plugin.getEventRegistry().registerGlobal(AddPlayerToWorldEvent.class, event -> {
       Holder<EntityStore> holder = event.getHolder();
       PlayerRef playerRef = holder.getComponent(PlayerRef.getComponentType());
@@ -39,15 +39,15 @@ public class WorldActionScheduler {
     });
   }
 
-  public void scheduleAdd(UUID uuid, World world, Runnable action) {
-    schedule(uuid, world, ActionType.ADD, action);
+  public void enqueueAdd(UUID uuid, World world, Runnable action) {
+    enqueue(uuid, world, ActionType.ADD, action);
   }
 
-  public void scheduleReady(UUID uuid, World world, Runnable action) {
-    schedule(uuid, world, ActionType.READY, action);
+  public void enqueueReady(UUID uuid, World world, Runnable action) {
+    enqueue(uuid, world, ActionType.READY, action);
   }
 
-  private void schedule(UUID uuid, World world, ActionType actionType, Runnable action) {
+  private void enqueue(UUID uuid, World world, ActionType actionType, Runnable action) {
     PlayerRef playerRef = Universe.get().getPlayer(uuid);
     if (playerRef != null) {
       World currentWorld = playerRef.getReference().getStore().getExternalData().getWorld();

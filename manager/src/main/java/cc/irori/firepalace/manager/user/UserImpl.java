@@ -109,7 +109,7 @@ public class UserImpl implements User {
         Teleport teleport = Teleport.createForPlayer(result.world(), result.spawnPosition());
         store.addComponent(playerRef.getReference(), Teleport.getComponentType(), teleport);
       });
-      firepalace.getWorldActionScheduler().scheduleAdd(playerRef.getUuid(), result.world(), () -> {
+      firepalace.getWorldActionQueue().enqueueAdd(playerRef.getUuid(), result.world(), () -> {
         LOGGER.atInfo().log("%s joined game: %s", getName(), metadata.id());
         GameInstanceImpl instance = (GameInstanceImpl) currentGame.getGameInstance();
         instance.addUser(this);
@@ -118,7 +118,7 @@ public class UserImpl implements User {
         state = UserState.PLAYING;
         future.complete(null);
       });
-      firepalace.getWorldActionScheduler().scheduleReady(playerRef.getUuid(), result.world(),
+      firepalace.getWorldActionQueue().enqueueReady(playerRef.getUuid(), result.world(),
           () -> currentGame.onUserReady(this));
       return future;
     });

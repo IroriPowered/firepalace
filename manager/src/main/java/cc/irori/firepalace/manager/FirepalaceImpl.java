@@ -15,7 +15,7 @@ import cc.irori.firepalace.manager.game.GameManager;
 import cc.irori.firepalace.manager.redis.UpstreamIncomingPacketRegistry;
 import cc.irori.firepalace.manager.redis.UpstreamPacketHandlerImpl;
 import cc.irori.firepalace.manager.user.UserManager;
-import cc.irori.firepalace.manager.util.WorldActionScheduler;
+import cc.irori.firepalace.manager.util.WorldActionQueue;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.util.Config;
 import java.util.UUID;
@@ -29,7 +29,7 @@ public class FirepalaceImpl implements Firepalace {
 
   private final UserManager userManager;
   private final GameManager gameManager;
-  private final WorldActionScheduler worldActionScheduler;
+  private final WorldActionQueue worldActionQueue;
   private final RedisParticipant<UpstreamPacketHandler, DownstreamPacket> redis;
 
   public FirepalaceImpl(FirepalaceManagerPlugin plugin) {
@@ -40,7 +40,7 @@ public class FirepalaceImpl implements Firepalace {
 
     this.userManager = new UserManager(this, plugin);
     this.gameManager = new GameManager();
-    this.worldActionScheduler = new WorldActionScheduler(plugin);
+    this.worldActionQueue = new WorldActionQueue(plugin);
 
     if (redisConfig.get().useRemote) {
       this.redis = new RedisParticipant<>(
@@ -79,8 +79,8 @@ public class FirepalaceImpl implements Firepalace {
     return gameManager;
   }
 
-  public WorldActionScheduler getWorldActionScheduler() {
-    return worldActionScheduler;
+  public WorldActionQueue getWorldActionQueue() {
+    return worldActionQueue;
   }
 
   public RedisParticipant<UpstreamPacketHandler, DownstreamPacket> getRedis() {
