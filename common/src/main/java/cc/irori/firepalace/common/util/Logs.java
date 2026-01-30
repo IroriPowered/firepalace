@@ -2,7 +2,9 @@ package cc.irori.firepalace.common.util;
 
 import com.hypixel.hytale.logger.HytaleLogger;
 import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 
@@ -30,14 +32,18 @@ public class Logs {
   }
 
   private static @Nullable CodeSource getCallerSource() {
-    Class<?> caller = WALKER.walk(
+    Optional<?> caller = WALKER.walk(
         frames -> frames
             .map(StackWalker.StackFrame::getDeclaringClass)
             .filter(clazz ->
                 !clazz.getPackageName().startsWith("cc.irori.firepalace.common"))
             .findFirst()
-            .orElse(null)
     );
-    return caller != null ? caller.getProtectionDomain().getCodeSource() : null;
+
+    //noinspection unchecked
+    return ((Optional<Class<?>>) caller)
+        .map(Class::getProtectionDomain)
+        .map(ProtectionDomain::getCodeSource)
+        .orElse(null);
   }
 }
