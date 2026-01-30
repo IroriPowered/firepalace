@@ -7,8 +7,7 @@ base {
 }
 
 dependencies {
-    implementation(project(":api"))
-
+    compileOnly(project(":api"))
     compileOnly(project(":common"))
 
     compileOnly(libs.hytale)

@@ -22,17 +22,22 @@ public class GameUtil {
   private GameUtil() {
   }
 
-  public static void sendGameStatusPacket(FirepalaceImpl firepalace) {
+  public static List<GameStatus> getGameStatusList(FirepalaceImpl firepalace) {
     List<GameStatus> statusList = new ArrayList<>();
     for (GameHolder holder : firepalace.getGameManager().getAllGameHolders()) {
       statusList.add(new GameStatus(
           holder.getMetadata(),
-          holder.getGameInstance().getUsers().stream()
+          holder.hasGame() ? holder.getGameInstance().getUsers().stream()
               .map(User::getUuid)
-              .toList()
+              .toList() : List.of()
       ));
     }
-    firepalace.getRedis().sendPacket(new DownstreamStatusPacket(statusList));
+    return statusList;
+  }
+
+  public static void sendGameStatusPacket(FirepalaceImpl firepalace) {
+    firepalace.getRedis().sendPacket(
+        new DownstreamStatusPacket(GameUtil.getGameStatusList(firepalace)));
   }
 
   public static CompletableFuture<Void> joinGameById(FirepalaceImpl firepalace, UserImpl user, String gameId) {

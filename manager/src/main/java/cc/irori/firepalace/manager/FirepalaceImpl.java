@@ -7,25 +7,23 @@ import cc.irori.firepalace.api.game.metadata.GameMetadata;
 import cc.irori.firepalace.api.user.User;
 import cc.irori.firepalace.api.util.WorldActionQueue;
 import cc.irori.firepalace.common.redis.Recipient;
-import cc.irori.firepalace.common.redis.RedisConfig;
 import cc.irori.firepalace.common.redis.RedisParticipant;
 import cc.irori.firepalace.common.redis.UpstreamPacketHandler;
 import cc.irori.firepalace.common.redis.protocol.DownstreamPacket;
+import cc.irori.firepalace.common.util.Logs;
 import cc.irori.firepalace.manager.command.GameCommand;
 import cc.irori.firepalace.manager.game.GameManager;
-import cc.irori.firepalace.manager.redis.UpstreamIncomingPacketRegistry;
 import cc.irori.firepalace.manager.redis.UpstreamPacketHandlerImpl;
 import cc.irori.firepalace.manager.user.UserManager;
-import com.hypixel.hytale.server.core.plugin.JavaPlugin;
-import com.hypixel.hytale.server.core.util.Config;
+import com.hypixel.hytale.logger.HytaleLogger;
 import java.util.UUID;
 import java.util.function.Function;
 
 public class FirepalaceImpl implements Firepalace {
 
-  private final JavaPlugin plugin;
+  private final HytaleLogger LOGGER = Logs.logger();
 
-  private final Config<RedisConfig> redisConfig;
+  private final FirepalaceManagerPlugin plugin;
 
   private final UserManager userManager;
   private final GameManager gameManager;
@@ -35,16 +33,16 @@ public class FirepalaceImpl implements Firepalace {
   public FirepalaceImpl(FirepalaceManagerPlugin plugin) {
     this.plugin = plugin;
 
-    this.redisConfig = plugin.config("RedisConfig", RedisConfig.CODEC);
-    redisConfig.load().join();
+    plugin.redisConfig.load().join();
 
     this.userManager = new UserManager(this, plugin);
     this.gameManager = new GameManager(this);
     this.worldActionQueue = new WorldActionQueue(plugin);
 
-    if (redisConfig.get().useRemote) {
+    if (plugin.redisConfig.get().useRemote) {
+      LOGGER.atInfo().log("Using redis for remote status sending");
       this.redis = new RedisParticipant<>(
-          redisConfig.get(),
+          plugin.redisConfig.get(),
           Recipient.UPSTREAM,
           new UpstreamPacketHandlerImpl(this)
       );
@@ -88,7 +86,7 @@ public class FirepalaceImpl implements Firepalace {
 
   public void shutdown() {
     gameManager.shutdown();
-    redisConfig.save().join();
+    plugin.redisConfig.save().join();
     if (redis != null) {
       redis.shutdown();
     }

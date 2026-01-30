@@ -10,7 +10,7 @@ public class RemoteStatusResolver implements StatusResolver {
 
   private final FirepalaceGuiPlugin plugin;
 
-  private List<GameStatus> statusList;
+  private List<GameStatus> statusList = List.of();
 
   public RemoteStatusResolver(FirepalaceGuiPlugin plugin) {
     this.plugin = plugin;

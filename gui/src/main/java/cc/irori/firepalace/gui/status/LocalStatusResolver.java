@@ -1,14 +1,9 @@
 package cc.irori.firepalace.gui.status;
 
-import cc.irori.firepalace.api.user.User;
 import cc.irori.firepalace.common.status.GameStatus;
-import cc.irori.firepalace.common.util.Logs;
 import cc.irori.firepalace.manager.FirepalaceImpl;
-import cc.irori.firepalace.manager.game.GameHolder;
 import cc.irori.firepalace.manager.user.UserImpl;
 import cc.irori.firepalace.manager.util.GameUtil;
-import com.hypixel.hytale.logger.HytaleLogger;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,16 +12,7 @@ public class LocalStatusResolver implements StatusResolver {
   @Override
   public List<GameStatus> resolve() {
     FirepalaceImpl firepalace = FirepalaceImpl.get();
-    List<GameStatus> statusList = new ArrayList<>();
-    for (GameHolder holder : firepalace.getGameManager().getAllGameHolders()) {
-      statusList.add(new GameStatus(
-          holder.getMetadata(),
-          holder.getGameInstance().getUsers().stream()
-              .map(User::getUuid)
-              .toList()
-      ));
-    }
-    return statusList;
+    return GameUtil.getGameStatusList(firepalace);
   }
 
   @Override
