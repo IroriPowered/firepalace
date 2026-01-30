@@ -2,7 +2,10 @@ package cc.irori.firepalace.manager.redis;
 
 import cc.irori.firepalace.api.user.User;
 import cc.irori.firepalace.api.util.WorldActionQueue;
+import cc.irori.firepalace.common.redis.IncomingPacketRegistry;
+import cc.irori.firepalace.common.redis.PacketHandler;
 import cc.irori.firepalace.common.redis.UpstreamPacketHandler;
+import cc.irori.firepalace.common.redis.protocol.UpstreamPacket;
 import cc.irori.firepalace.common.redis.protocol.impl.downstream.DownstreamStatusPacket;
 import cc.irori.firepalace.common.redis.protocol.impl.upstream.UpstreamQueueJoinPacket;
 import cc.irori.firepalace.common.redis.protocol.impl.upstream.UpstreamRequestStatusPacket;
@@ -23,6 +26,11 @@ public class UpstreamPacketHandlerImpl implements UpstreamPacketHandler {
 
   public UpstreamPacketHandlerImpl(FirepalaceImpl firepalace) {
     this.firepalace = firepalace;
+  }
+
+  @Override
+  public IncomingPacketRegistry<? extends PacketHandler<UpstreamPacket>> getPacketRegistry() {
+    return UpstreamIncomingPacketRegistry.INSTANCE;
   }
 
   @Override

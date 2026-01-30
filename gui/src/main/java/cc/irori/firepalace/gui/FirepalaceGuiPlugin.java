@@ -36,8 +36,7 @@ public class FirepalaceGuiPlugin extends JavaPlugin {
       redis = new RedisParticipant<>(
           redisConfig.get(),
           Recipient.DOWNSTREAM,
-          new DownstreamPacketHandlerImpl(this),
-          new DownstreamIncomingPacketRegistry()
+          new DownstreamPacketHandlerImpl(this)
       );
       statusResolver = new RemoteStatusResolver(this);
     } else {

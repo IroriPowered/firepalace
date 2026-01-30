@@ -9,6 +9,9 @@ public class IncomingPacketRegistry<T extends PacketHandler<?>> {
 
   private final Map<String, PacketFactory<T>> constructors = new HashMap<>();
 
+  protected IncomingPacketRegistry() {
+  }
+
   public void register(String id, PacketFactory<T> constructor) {
     constructors.put(id, constructor);
   }

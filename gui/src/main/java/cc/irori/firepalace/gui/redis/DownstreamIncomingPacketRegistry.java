@@ -7,7 +7,10 @@ import cc.irori.firepalace.common.redis.protocol.impl.downstream.DownstreamStatu
 public class DownstreamIncomingPacketRegistry
     extends IncomingPacketRegistry<DownstreamPacketHandler> {
 
-  public DownstreamIncomingPacketRegistry() {
+  public static final DownstreamIncomingPacketRegistry INSTANCE =
+      new DownstreamIncomingPacketRegistry();
+
+  protected DownstreamIncomingPacketRegistry() {
     register(DownstreamStatusPacket.ID, DownstreamStatusPacket::new);
   }
 }

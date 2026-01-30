@@ -31,8 +31,7 @@ public class RedisParticipant<R extends PacketHandler<?>, S extends Packet<?>> {
   private final RedisClient client;
   private final Jedis pubSub;
 
-  public RedisParticipant(RedisConfig config, Recipient me,
-                          R packetHandler, IncomingPacketRegistry<R> registry) {
+  public RedisParticipant(RedisConfig config, Recipient me, R packetHandler) {
     this.me = me;
 
     ConnectionPoolConfig connectionPoolConfig = new ConnectionPoolConfig();
@@ -45,7 +44,7 @@ public class RedisParticipant<R extends PacketHandler<?>, S extends Packet<?>> {
     pubSub = new Jedis(config.redisHost, config.redisPort);
 
     new Thread(() -> {
-      pubSub.subscribe(new Receiver<>(packetHandler, registry), me.getId()
+      pubSub.subscribe(new Receiver<>(packetHandler), me.getId()
           .getBytes(StandardCharsets.UTF_8));
     }, "Redis packet listener thread").start();
   }
@@ -78,18 +77,18 @@ public class RedisParticipant<R extends PacketHandler<?>, S extends Packet<?>> {
   static class Receiver<T extends PacketHandler<?>> extends BinaryJedisPubSub {
 
     private final T packetHandler;
-    private final IncomingPacketRegistry<T> registry;
 
-    public Receiver(T packetHandler, IncomingPacketRegistry<T> registry) {
+    public Receiver(T packetHandler) {
       this.packetHandler = packetHandler;
-      this.registry = registry;
     }
 
     @Override
     public void onMessage(byte[] channel, byte[] message) {
       try (BsonBinaryReader reader = new BsonBinaryReader(ByteBuffer.wrap(message))) {
         BsonDocument document = DOCUMENT_CODEC.decode(reader, DECODER_CONTEXT);
-        Packet<T> packet = registry.createPacket(document);
+        //noinspection unchecked
+        Packet<T> packet =
+            (Packet<T>) packetHandler.getPacketRegistry().createPacket(document);
         packet.handle(packetHandler);
       } catch (Exception e) {
         Logs.logger().atSevere().withCause(e).log("Failed to handle incoming Redis packet");

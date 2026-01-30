@@ -46,8 +46,7 @@ public class FirepalaceImpl implements Firepalace {
       this.redis = new RedisParticipant<>(
           redisConfig.get(),
           Recipient.UPSTREAM,
-          new UpstreamPacketHandlerImpl(this),
-          new UpstreamIncomingPacketRegistry()
+          new UpstreamPacketHandlerImpl(this)
       );
     } else {
       redis = null;

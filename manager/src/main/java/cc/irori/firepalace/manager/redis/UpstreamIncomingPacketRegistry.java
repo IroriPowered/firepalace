@@ -7,7 +7,9 @@ import cc.irori.firepalace.common.redis.protocol.impl.upstream.UpstreamRequestSt
 
 public class UpstreamIncomingPacketRegistry extends IncomingPacketRegistry<UpstreamPacketHandler> {
 
-  public UpstreamIncomingPacketRegistry() {
+  public static final UpstreamIncomingPacketRegistry INSTANCE = new UpstreamIncomingPacketRegistry();
+
+  protected UpstreamIncomingPacketRegistry() {
     register(UpstreamQueueJoinPacket.ID, UpstreamQueueJoinPacket::new);
     register(UpstreamRequestStatusPacket.ID, UpstreamRequestStatusPacket::new);
   }
