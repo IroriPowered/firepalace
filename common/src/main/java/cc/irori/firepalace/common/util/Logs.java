@@ -8,7 +8,8 @@ import javax.annotation.Nullable;
 
 public class Logs {
 
-  private static final StackWalker WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+  private static final StackWalker WALKER = StackWalker.getInstance(
+      StackWalker.Option.RETAIN_CLASS_REFERENCE);
   private static final String DEFAULT_LOGGER_NAME = "Firepalace";
   private static final Map<CodeSource, String> LOGGER_NAMES = new ConcurrentHashMap<>();
 
