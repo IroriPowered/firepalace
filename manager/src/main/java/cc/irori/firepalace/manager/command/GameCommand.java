@@ -7,7 +7,7 @@ public class GameCommand extends AbstractCommandCollection {
   public GameCommand() {
     super("game", "firepalace.commands.game.desc");
 
-    addSubCommand(new GameJoinCommand());
-    addSubCommand(new GameQuitCommand());
+    addSubCommand(new JoinCommand());
+    addSubCommand(new QuitCommand());
   }
 }

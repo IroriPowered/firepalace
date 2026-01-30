@@ -39,7 +39,7 @@ public class FirepalaceImpl implements Firepalace {
     redisConfig.load().join();
 
     this.userManager = new UserManager(this, plugin);
-    this.gameManager = new GameManager();
+    this.gameManager = new GameManager(this);
     this.worldActionQueue = new WorldActionQueue(plugin);
 
     if (redisConfig.get().useRemote) {
@@ -87,6 +87,7 @@ public class FirepalaceImpl implements Firepalace {
   }
 
   public void shutdown() {
+    gameManager.shutdown();
     redisConfig.save().join();
     if (redis != null) {
       redis.shutdown();

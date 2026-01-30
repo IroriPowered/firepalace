@@ -19,11 +19,11 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
-public class GameQuitCommand extends AbstractPlayerCommand {
+public class QuitCommand extends AbstractPlayerCommand {
 
   private static final HytaleLogger LOGGER = Logs.logger();
 
-  public GameQuitCommand() {
+  public QuitCommand() {
     super("quit", "firepalace.commands.game.quit.desc");
     addAliases("leave");
   }

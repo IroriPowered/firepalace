@@ -6,14 +6,13 @@ import cc.irori.firepalace.common.util.Logs;
 import cc.irori.firepalace.manager.FirepalaceImpl;
 import cc.irori.firepalace.manager.game.GameHolder;
 import cc.irori.firepalace.manager.user.UserImpl;
+import cc.irori.firepalace.manager.util.GameUtil;
 import com.hypixel.hytale.logger.HytaleLogger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class LocalStatusResolver implements StatusResolver {
-
-  private static final HytaleLogger LOGGER = Logs.logger();
 
   @Override
   public List<GameStatus> resolve() {
@@ -34,13 +33,6 @@ public class LocalStatusResolver implements StatusResolver {
   public void joinGame(UUID uuid, String gameId) {
     FirepalaceImpl firepalace = FirepalaceImpl.get();
     UserImpl user = firepalace.getUserManager().getUser(uuid);
-
-    GameHolder holder = firepalace.getGameManager().getGameHolder(gameId);
-    if (holder == null) {
-      LOGGER.atWarning().log("Join request for unknown game: %s", gameId);
-      return;
-    }
-
-    user.joinGame(holder.getMetadata());
+    GameUtil.joinGameById(firepalace, user, gameId);
   }
 }

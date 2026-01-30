@@ -6,6 +6,7 @@ import cc.irori.firepalace.common.redis.PacketHandler;
 import cc.irori.firepalace.common.redis.protocol.DownstreamPacket;
 import cc.irori.firepalace.common.redis.protocol.impl.downstream.DownstreamStatusPacket;
 import cc.irori.firepalace.gui.FirepalaceGuiPlugin;
+import cc.irori.firepalace.gui.status.RemoteStatusResolver;
 
 public class DownstreamPacketHandlerImpl implements DownstreamPacketHandler {
 
@@ -22,6 +23,6 @@ public class DownstreamPacketHandlerImpl implements DownstreamPacketHandler {
 
   @Override
   public void handleStatusPacket(DownstreamStatusPacket packet) {
-
+    ((RemoteStatusResolver) plugin.getStatusResolver()).updateStatusList(packet.statusList());
   }
 }

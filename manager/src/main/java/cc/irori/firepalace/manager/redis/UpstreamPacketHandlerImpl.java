@@ -1,22 +1,17 @@
 package cc.irori.firepalace.manager.redis;
 
-import cc.irori.firepalace.api.user.User;
 import cc.irori.firepalace.api.util.WorldActionQueue;
 import cc.irori.firepalace.common.redis.IncomingPacketRegistry;
 import cc.irori.firepalace.common.redis.PacketHandler;
 import cc.irori.firepalace.common.redis.UpstreamPacketHandler;
 import cc.irori.firepalace.common.redis.protocol.UpstreamPacket;
-import cc.irori.firepalace.common.redis.protocol.impl.downstream.DownstreamStatusPacket;
 import cc.irori.firepalace.common.redis.protocol.impl.upstream.UpstreamQueueJoinPacket;
 import cc.irori.firepalace.common.redis.protocol.impl.upstream.UpstreamRequestStatusPacket;
-import cc.irori.firepalace.common.status.GameStatus;
 import cc.irori.firepalace.common.util.Logs;
 import cc.irori.firepalace.manager.FirepalaceImpl;
-import cc.irori.firepalace.manager.game.GameHolder;
 import cc.irori.firepalace.manager.user.UserImpl;
+import cc.irori.firepalace.manager.util.GameUtil;
 import com.hypixel.hytale.logger.HytaleLogger;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UpstreamPacketHandlerImpl implements UpstreamPacketHandler {
 
@@ -43,28 +38,13 @@ public class UpstreamPacketHandlerImpl implements UpstreamPacketHandler {
                 packet.uuid());
             return;
           }
-          GameHolder holder = firepalace.getGameManager().getGameHolder(packet.gameId());
-          if (holder == null) {
-            LOGGER.atWarning().log("Join request for unknown game: %s",
-                packet.gameId());
-            return;
-          }
 
-          user.joinGame(holder.getMetadata());
+          GameUtil.joinGameById(firepalace, user, packet.gameId());
         });
   }
 
   @Override
   public void handleRequestStatus(UpstreamRequestStatusPacket packet) {
-    List<GameStatus> statusList = new ArrayList<>();
-    for (GameHolder holder : firepalace.getGameManager().getAllGameHolders()) {
-      statusList.add(new GameStatus(
-          holder.getMetadata(),
-          holder.getGameInstance().getUsers().stream()
-              .map(User::getUuid)
-              .toList()
-      ));
-    }
-    firepalace.getRedis().sendPacket(new DownstreamStatusPacket(statusList));
+    GameUtil.sendGameStatusPacket(firepalace);
   }
 }
