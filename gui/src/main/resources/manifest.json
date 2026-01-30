@@ -13,9 +13,11 @@
   ],
   "ServerVersion": "*",
   "Dependencies": {
-    "IroriPowered:Firepalace-Common": "*"
+    "IroriPowered:Firepalace-Common": "*",
+    "IroriPowered:Shodo": "*"
   },
   "OptionalDependencies": {
     "IroriPowered:Firepalace-Manager": "*"
-  }
+  },
+  "IncludesAssetPack": true
 }

@@ -1,0 +1,33 @@
+$C = "../Common.ui";
+
+$C.@PageOverlay {}
+
+$C.@Container {
+    Anchor: (Width: 650, Height: 700);
+
+    #Title {
+        Group {
+            $C.@Title {
+                @Text = "Select Minigame";
+            }
+        }
+    }
+
+    #Content {
+        LayoutMode: Left;
+
+        Group #GameList {
+            Anchor: (Width: 630);
+            FlexWeight: 1;
+            LayoutMode: TopScrolling;
+            Padding: (Left: 10);
+            ScrollbarStyle: $C.@DefaultScrollbarStyle;
+
+            Group #GameCardContainer {
+                LayoutMode: Top;
+            }
+        }
+    }
+}
+
+$C.@BackButton {}

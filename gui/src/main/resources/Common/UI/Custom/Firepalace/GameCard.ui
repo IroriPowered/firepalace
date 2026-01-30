@@ -1,0 +1,90 @@
+$C = "../Common.ui";
+$S = "Sounds.ui";
+
+@TileWidth = 630;
+@TileHeight = 150;
+
+@ContentWidth = 610;
+@ContentHeight = 130;
+
+@IconWidth = 231;
+
+@TagSectionHeight = 24;
+@OnlineIconSize = @TagSectionHeight;
+
+Group {
+    $C.@TertiaryButton #GameButton {
+        @DefaultButtonHeight = @TileHeight;
+        @Width = @TileWidth;
+        @Sounds = S.@ButtonsMain;
+    }
+
+    Group {
+        LayoutMode: Left;
+        Anchor: (Height: @ContentHeight, Width: @ContentWidth);
+
+        Group #GameIcon {
+            Anchor: (Width: @IconWidth);
+        }
+
+        Group {
+            Anchor: (Width: @ContentWidth - @IconWidth - 10);
+            Padding: (Left: 10);
+
+            Group {
+                LayoutMode: Top;
+                FlexWeight: 1;
+
+                Label #GameName {
+                    Style: (FontSize: 18, TextColor: #93844c, RenderBold: true, RenderUppercase: true, FontName: "Secondary");
+                }
+
+                Group {
+                    Anchor: (Height: 1);
+                    Padding: (Top: 5);
+                    Background: #5e512c;
+                }
+
+                Group #GameDescription {
+                    Padding: (Top: 5);
+                }
+            }
+
+            Group {
+                Anchor: (Bottom: 0, Height: @TagSectionHeight);
+
+                Group #TagContainer {
+                    LayoutMode: Left;
+                    Anchor: (Left: 0, Height: @TagSectionHeight);
+                }
+
+                Group {
+                    LayoutMode: Right;
+                    Anchor: (Right: 0, Height: @TagSectionHeight);
+                    FlexWeight: 1;
+
+                    Group #OnlineIndicator {
+                        Anchor: (Width: @OnlineIconSize, Height: @OnlineIconSize);
+                        Padding: (Right: 10);
+                    }
+
+                    Group {
+                        Label #OnlineNumber {
+                            Style: (FontSize: 14, TextColor: #7fff7f, VerticalAlignment: Center, HorizontalAlignment: Center);
+                            Visible: false;
+                        }
+                        Label #OfflineNumber {
+                            Style: (FontSize: 14, TextColor: #808080, VerticalAlignment: Center, HorizontalAlignment: Center);
+                            Visible: false;
+                            Text: "0";
+                        }
+                    }
+
+                    Group #OnlineText {
+                        Anchor: (Width: 77);
+                    }
+                }
+            }
+        }
+    }
+}

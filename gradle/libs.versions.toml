@@ -2,10 +2,12 @@
 gradle-shadow = "9.3.1"
 hytale = "2026.01.27-734d39026"
 jedis = "7.2.1"
+shodo = "1.2.0-SNAPSHOT"
 
 [libraries]
 hytale = { group = "com.hypixel.hytale", name = "Server", version.ref = "hytale" }
 jedis = { group = "redis.clients", name = "jedis", version.ref = "jedis" }
+shodo = { group = "cc.irori", name = "shodo", version.ref = "shodo" }
 
 [plugins]
 shadow = { id = "com.gradleup.shadow", version.ref = "gradle-shadow" }

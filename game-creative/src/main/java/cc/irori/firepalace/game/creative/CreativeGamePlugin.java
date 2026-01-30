@@ -13,7 +13,7 @@ public class CreativeGamePlugin extends JavaPlugin {
   private static final GameMetadata METADATA = new GameMetadata(
       "creative",
       "Creative Freebuild",
-      "Description goes here",
+      "[仮テキスト] クリエイティブモードで自由に建築! Hytaleの強力な建築ツールを使って、創造を楽しもう。",
       List.of(GameTag.SOLO),
       true
   );
