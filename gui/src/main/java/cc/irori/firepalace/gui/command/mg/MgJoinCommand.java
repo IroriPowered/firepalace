@@ -5,6 +5,7 @@ import cc.irori.firepalace.gui.FirepalaceGuiPlugin;
 import cc.irori.firepalace.gui.status.StatusResolver;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.protocol.GameMode;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
@@ -22,6 +23,7 @@ public class MgJoinCommand extends AbstractPlayerCommand {
   public MgJoinCommand() {
     super("join", "firepalace.commands.mg.join.desc");
 
+    setPermissionGroup(GameMode.Adventure);
     this.idArg = withRequiredArg("id", "firepalace.commands.mg.join.id.desc", ArgTypes.STRING);
   }
 

@@ -7,6 +7,7 @@ import cc.irori.firepalace.manager.FirepalaceImpl;
 import cc.irori.firepalace.manager.util.GameUtil;
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -53,6 +54,16 @@ public class GameManager {
 
   public Collection<GameHolder> getAllGameHolders() {
     return games.values();
+  }
+
+  public boolean isPreJoinHandled(UUID uuid) {
+    for (GameHolder holder : games.values()) {
+      GameInstanceImpl instance = holder.getGameInstance();
+      if (instance != null && instance.isPreJoinHandled(uuid)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public void shutdown() {

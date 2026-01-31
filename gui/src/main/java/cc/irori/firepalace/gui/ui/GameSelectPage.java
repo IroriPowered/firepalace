@@ -2,16 +2,23 @@ package cc.irori.firepalace.gui.ui;
 
 import cc.irori.firepalace.api.game.metadata.GameTag;
 import cc.irori.firepalace.common.status.GameStatus;
+import cc.irori.firepalace.common.util.PlayerUtil;
 import cc.irori.firepalace.gui.FirepalaceGuiPlugin;
 import cc.irori.shodo.BuiltInFontData;
 import cc.irori.shodo.TextBox;
+import com.hypixel.hytale.codec.Codec;
+import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
+import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
+import com.hypixel.hytale.protocol.packets.interface_.Page;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.PatchStyle;
 import com.hypixel.hytale.server.core.ui.Value;
+import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -20,6 +27,8 @@ import java.util.List;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 public class GameSelectPage extends InteractiveCustomUIPage<GameSelectPage.PageData> {
+
+  private static final String KEY_GAME_TO_JOIN = "GameToJoin";
 
   private static final int GUI_CONTENT_WIDTH = 610;
   private static final int GUI_CONTENT_HEIGHT = 130;
@@ -41,11 +50,38 @@ public class GameSelectPage extends InteractiveCustomUIPage<GameSelectPage.PageD
 
     List<GameStatus> statusList = FirepalaceGuiPlugin.get().getStatusResolver().resolve();
     for (int i = 0; i < statusList.size(); i++) {
-        appendGameCard(uiCommandBuilder, statusList.get(i), i);
+        appendGameCard(uiCommandBuilder, uiEventBuilder, statusList.get(i), i);
+    }
+
+    if (FirepalaceGuiPlugin.get().isLocal()) {
+      uiCommandBuilder.set("#MainServerButtonContainer.Visible", true);
+      uiEventBuilder.addEventBinding(
+          CustomUIEventBindingType.Activating,
+          "#MainServerButton",
+          EventData.of(KEY_GAME_TO_JOIN, "_mainServer"),
+          true
+      );
     }
   }
 
-  private static void appendGameCard(UICommandBuilder uiCommandBuilder, GameStatus game, int index) {
+  @Override
+  public void handleDataEvent(@NonNullDecl Ref<EntityStore> ref,
+                              @NonNullDecl Store<EntityStore> store, @NonNullDecl PageData data) {
+    PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+    Player player = store.getComponent(ref, Player.getComponentType());
+    player.getPageManager().setPage(ref, store, Page.None);
+
+    if (data.gameToJoin == null) {
+      return;
+    }
+    if (data.gameToJoin.equals("_mainServer")) {
+      PlayerUtil.referToServer(playerRef, FirepalaceGuiPlugin.get().getGuiConfig().mainServerAddress);
+      return;
+    }
+    FirepalaceGuiPlugin.get().getStatusResolver().joinGame(playerRef, data.gameToJoin);
+  }
+
+  private static void appendGameCard(UICommandBuilder uiCommandBuilder, UIEventBuilder uiEventBuilder, GameStatus game, int index) {
     TextBox textBox = TextBox.builder()
         .setWidth(GUI_CONTENT_WIDTH - GUI_ICON_WIDTH - 10)
         .setHeight(GUI_CONTENT_HEIGHT - GUI_TAG_SECTION_HEIGHT - 10)
@@ -87,7 +123,13 @@ public class GameSelectPage extends InteractiveCustomUIPage<GameSelectPage.PageD
     uiCommandBuilder.set(selector + "#GameIcon.Background", "Firepalace/GameIcon/" + game.metadata().id() + ".png");
 
     if (game.metadata().available()) {
-      // Add event binding
+      uiEventBuilder.addEventBinding(
+          CustomUIEventBindingType.Activating,
+          selector + "#GameButton",
+          new EventData()
+              .append(KEY_GAME_TO_JOIN, game.metadata().id()),
+          true
+      );
     } else {
       uiCommandBuilder.set(selector + "#GameButton.Disabled", true);
     }
@@ -105,7 +147,15 @@ public class GameSelectPage extends InteractiveCustomUIPage<GameSelectPage.PageD
   }
 
   public static class PageData {
+
     static final BuilderCodec<PageData> CODEC = BuilderCodec.builder(PageData.class, PageData::new)
+        .addField(
+            new KeyedCodec<>(KEY_GAME_TO_JOIN, Codec.STRING),
+            (data, value) -> data.gameToJoin = value,
+            data -> data.gameToJoin
+        )
         .build();
+
+    private String gameToJoin = null;
   }
 }

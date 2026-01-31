@@ -6,18 +6,16 @@ import cc.irori.firepalace.api.user.User;
 import cc.irori.firepalace.api.user.UserState;
 import cc.irori.firepalace.api.util.Colors;
 import cc.irori.firepalace.common.util.Logs;
+import cc.irori.firepalace.common.util.PlayerUtil;
 import cc.irori.firepalace.manager.FirepalaceImpl;
 import cc.irori.firepalace.manager.game.GameHolder;
 import cc.irori.firepalace.manager.game.GameInstanceImpl;
 import cc.irori.firepalace.manager.util.GameUtil;
-import com.hypixel.hytale.component.Holder;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
-import com.hypixel.hytale.server.core.modules.entity.component.HeadRotation;
-import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -103,11 +101,7 @@ public class UserImpl implements User {
       if (connectEvent != null) {
         connectEvent.setWorld(result.world());
 
-        Holder<EntityStore> holder = connectEvent.getHolder();
-        TransformComponent transformComponent = holder.ensureAndGetComponent(TransformComponent.getComponentType());
-        transformComponent.setPosition(result.spawnPosition().getPosition());
-        HeadRotation headRotationComponent = holder.ensureAndGetComponent(HeadRotation.getComponentType());
-        headRotationComponent.teleportRotation(result.spawnPosition().getRotation());
+        PlayerUtil.teleport(connectEvent.getHolder(), result.spawnPosition());
         future = CompletableFuture.completedFuture(null);
       } else {
         World currentWorld = playerRef.getReference().getStore().getExternalData().getWorld();
@@ -120,14 +114,15 @@ public class UserImpl implements User {
       }
 
       GameHolder holder = firepalace.getGameManager().getGameHolder(metadata);
-      currentGame = holder.getGame();
+      Game game = holder.getGame();
+      currentGame = game;
 
       firepalace.getWorldActionQueue().enqueueAdd(playerRef.getUuid(), result.world(), event -> {
         LOGGER.atInfo().log("%s joined game: %s", getName(), metadata.id());
         GameInstanceImpl instance = (GameInstanceImpl) currentGame.getGameInstance();
         instance.addUser(this);
 
-        currentGame.onUserPostJoin(this);
+        game.onUserPostJoin(this);
         state = UserState.PLAYING;
 
         if (connectEvent == null) {
@@ -135,7 +130,7 @@ public class UserImpl implements User {
         }
       });
       firepalace.getWorldActionQueue().enqueueReady(playerRef.getUuid(), result.world(),
-          event -> currentGame.onUserReady(this));
+          event -> game.onUserReady(this));
       return future;
     });
   }

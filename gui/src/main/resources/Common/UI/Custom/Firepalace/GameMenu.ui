@@ -14,7 +14,17 @@ $C.@Container {
     }
 
     #Content {
-        LayoutMode: Left;
+        LayoutMode: Top;
+
+        Group #MainServerButtonContainer {
+            Anchor: (Width: 630);
+            Padding: (Bottom: 10);
+            Visible: false;
+
+            $C.@TextButton #MainServerButton {
+                Text: "Go to Main Server";
+            }
+        }
 
         Group #GameList {
             Anchor: (Width: 630);
