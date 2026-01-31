@@ -42,7 +42,7 @@ public class UpstreamPacketHandlerImpl implements UpstreamPacketHandler {
 
     GameUtil.tryCreateGame(holder)
         .thenCompose(creating -> GameUtil.tryPreJoin(holder, packet.uuid(), creating))
-        .thenAccept(result -> firepalace.getRedis().sendPacket(new DownstreamAcceptJoinPacket(packet.uuid())));
+        .thenAccept(result -> firepalace.getRedis().sendPacket(new DownstreamAcceptJoinPacket(holder.getMetadata(), packet.uuid())));
 
     firepalace.getWorldActionQueue().enqueueJoin(packet.uuid(),
         EventActionQueue.ANY_WORLD, event -> {

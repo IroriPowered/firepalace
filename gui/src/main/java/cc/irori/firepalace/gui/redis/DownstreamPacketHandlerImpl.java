@@ -1,5 +1,6 @@
 package cc.irori.firepalace.gui.redis;
 
+import cc.irori.firepalace.api.util.Colors;
 import cc.irori.firepalace.common.redis.DownstreamPacketHandler;
 import cc.irori.firepalace.common.redis.IncomingPacketRegistry;
 import cc.irori.firepalace.common.redis.PacketHandler;
@@ -10,6 +11,7 @@ import cc.irori.firepalace.common.util.PlayerUtil;
 import cc.irori.firepalace.gui.FirepalaceGuiPlugin;
 import cc.irori.firepalace.gui.GuiConfig;
 import cc.irori.firepalace.gui.status.RemoteStatusResolver;
+import cc.irori.shodo.ShodoAPI;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 
@@ -35,6 +37,9 @@ public class DownstreamPacketHandlerImpl implements DownstreamPacketHandler {
 
     GuiConfig config = plugin.getGuiConfig();
     PlayerUtil.referToServer(playerRef, config.minigameServerAddress);
+
+    ShodoAPI.getInstance().broadcastMessage(playerRef.getUsername() + "が"
+        + packet.metadata().name() + "に移動しました → /mg", Colors.AQUA_LIGHT);
   }
 
   @Override
