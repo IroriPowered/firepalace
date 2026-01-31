@@ -15,5 +15,6 @@
   "Dependencies": {
     "IroriPowered:Firepalace-Manager": "*"
   },
-  "OptionalDependencies": {}
+  "OptionalDependencies": {},
+  "IncludesAssetPack": true
 }
