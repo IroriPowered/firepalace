@@ -125,6 +125,8 @@ public class UserImpl implements User {
         game.onUserPostJoin(this);
         state = UserState.PLAYING;
 
+        GameUtil.sendGameStatusPacket(firepalace);
+
         if (connectEvent == null) {
           future.complete(null);
         }
@@ -158,6 +160,9 @@ public class UserImpl implements User {
             getName(), instance.getGameHolder().getMetadata().id());
         currentGame.onUserQuit(this);
         instance.removeUser(this);
+
+        GameUtil.sendGameStatusPacket(firepalace);
+
         currentGame = null;
         state = UserState.IDLE;
         future.complete(null);
