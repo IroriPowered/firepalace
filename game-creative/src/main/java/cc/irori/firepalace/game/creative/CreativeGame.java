@@ -35,9 +35,6 @@ public class CreativeGame extends Game {
   public void onUserPostJoin(User user) {
     Ref<EntityStore> ref = user.getPlayerRef().getReference();
     assert ref != null;
-
-    user.getPlayerRef().sendMessage(Message.raw("Welcome to Creative Freebuild!!")
-        .color(Colors.GREEN_LIGHT));
   }
 
   @Override
@@ -54,7 +51,5 @@ public class CreativeGame extends Game {
     assert ref != null;
 
     Player.setGameMode(ref, GameMode.Adventure, ref.getStore());
-    user.getPlayerRef().sendMessage(Message.raw("Bye!!")
-        .color(Colors.GREEN_LIGHT));
   }
 }

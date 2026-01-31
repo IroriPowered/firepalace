@@ -10,13 +10,15 @@ import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 public class CreativeGamePlugin extends JavaPlugin {
 
+  // CHECKSTYLE.OFF: LineLength
   private static final GameMetadata METADATA = new GameMetadata(
       "creative",
       "Creative Freebuild",
-      "[仮テキスト] クリエイティブモードで自由に建築! Hytaleの強力な建築ツールを使って、創造を楽しもう。",
+      "冒険に疲れたら、クリエイティブモードで自由に建築を楽しもう！ みんなの作品を眺めたり、誰かと一緒に建築するも良し。",
       List.of(GameTag.SOLO),
       true
   );
+    // CHECKSTYLE.ON: LineLength
 
   public CreativeGamePlugin(@NonNullDecl JavaPluginInit init) {
     super(init);
