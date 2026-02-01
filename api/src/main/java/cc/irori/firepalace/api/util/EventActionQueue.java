@@ -40,11 +40,13 @@ public class EventActionQueue {
 
     plugin.getEventRegistry().registerGlobal(PlayerReadyEvent.class, event -> {
       World world = event.getPlayer().getWorld();
-      PlayerRef playerRef = event.getPlayerRef().getStore()
-          .getComponent(event.getPlayerRef(), PlayerRef.getComponentType());
+      world.execute(() -> {
+        PlayerRef playerRef = event.getPlayerRef().getStore()
+            .getComponent(event.getPlayerRef(), PlayerRef.getComponentType());
 
-      lookupAndRun(new QueueKey(playerRef.getUuid(), world, ActionType.READY), event);
-      lookupAndRun(new QueueKey(playerRef.getUuid(), ANY_WORLD, ActionType.READY), event);
+        lookupAndRun(new QueueKey(playerRef.getUuid(), world, ActionType.READY), event);
+        lookupAndRun(new QueueKey(playerRef.getUuid(), ANY_WORLD, ActionType.READY), event);
+      });
     });
   }
 

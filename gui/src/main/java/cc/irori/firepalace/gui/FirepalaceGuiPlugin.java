@@ -105,15 +105,18 @@ public class FirepalaceGuiPlugin extends JavaPlugin {
       }
       Ref<EntityStore> ref = event.getPlayerRef();
       Store<EntityStore> store = ref.getStore();
-      PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
-      Player player = store.getComponent(ref, Player.getComponentType());
-      UUID uuid = playerRef.getUuid();
 
-      if (joiningUsers.remove(uuid)) {
-        player.getPageManager().openCustomPage(ref, store,
-            new GameSelectPage(playerRef, CustomPageLifetime.CantClose)
-        );
-      }
+      event.getPlayer().getWorld().execute(() -> {
+        PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+        Player player = store.getComponent(ref, Player.getComponentType());
+        UUID uuid = playerRef.getUuid();
+
+        if (joiningUsers.remove(uuid)) {
+          player.getPageManager().openCustomPage(ref, store,
+              new GameSelectPage(playerRef, CustomPageLifetime.CantClose)
+          );
+        }
+      });
     });
 
     getEventRegistry().register(PlayerDisconnectEvent.class, event -> {
